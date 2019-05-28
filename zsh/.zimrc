@@ -1,0 +1,83 @@
+#################
+# CORE SETTINGS #
+#################
+
+#
+# Zim settings
+#
+
+# Select what modules you would like enabled.
+# The second line of modules may depend on options set by modules in the first
+# line. These dependencies are noted on the respective module's README.md.
+zmodules=(directory environment git git-info history input utility custom \
+          prompt completion syntax-highlighting history-substring-search )
+
+
+###################
+# MODULE SETTINGS #
+###################
+
+#
+# Prompt
+#
+
+# Set your desired prompt here
+zprompt_theme='eriner white white white white'
+
+#
+# Completion
+#
+
+# Set an optional host-specific filename for the completion cache file. If none
+# is provided, the default '.zcompdump' is used.
+#zcompdump_file=".zcompdump-${HOST}-${ZSH_VERSION}"
+
+#
+# Utility
+#
+setopt CORRECT
+HISTSIZE=100000000
+SAVEHIST=100000000
+setopt appendhistory
+setopt autocd
+setopt extendedglob
+setopt nomatch
+setopt notify
+setopt HIST_IGNORE_SPACE
+setopt extended_history
+setopt hist_ignore_dups
+setopt hist_verify
+setopt share_history
+unsetopt hist_save_by_copy
+
+# Set custom spelling correction prompt
+# SPROMPT='zsh: correct %F{red}%R%f to %F{green}%r%f [nyae]? '
+ztermtitle='n'
+zdouble_dot_expand='true'
+zinput_mode='vi'
+zhighlighters=(main brackets cursor)
+
+function exit {
+  echo "Please refrain from using exit, instead use 'ctrl-a'"
+}
+
+x-yank() {
+    zle copy-region-as-kill
+    print -rn -- $CUTBUFFER | xclip -sel clip
+    zle exchange-point-and-mark -n -1
+}
+zle -N x-yank
+
+x-paste() {
+    killring=("$CUTBUFFER" "${(@)killring[1,-2]}")
+    CUTBUFFER=$(xclip -selection clipboard -o)
+    zle yank
+}
+zle -N x-paste
+
+bindkey -M vicmd "y" x-yank
+bindkey -M vicmd "Y" x-yank
+bindkey -M vicmd "p" x-paste
+
+export MYVIMRC="${USER_HOME}/.vim_runtime/vimrc"
+export VIMINIT=":set runtimepath+=${USER_HOME}/.vim_runtime|:source $MYVIMRC"
