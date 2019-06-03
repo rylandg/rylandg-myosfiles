@@ -9,6 +9,10 @@ export VIM_PLUGIN_PATH=$HOME/.vim_runtime/plugins.vim
 
 export TMUX_PLUGIN_MANAGER_PATH=$HOME/.tmux/plugins/
 
+# Add all of our host ssh keys
+eval `ssh-agent -s`
+grep -slR "PRIVATE" ~/.ssh_host/ | xargs ssh-add
+
 if [ ! -d $ZIM_HOME ]; then
   # ZIM_HOME has issues being auto set during build
   # Install Zim, which acts as our base zsh framework
