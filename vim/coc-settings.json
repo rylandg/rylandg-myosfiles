@@ -1,8 +1,45 @@
 {
   "tsserver.typingsCacheLocation": "$HOME/.vim_runtime/coc_cache",
-  "typescript.suggest.enabled": false,
-  "typescript.validate.enable": false,
-  "javascript.suggest.enabled": false,
-  "javascript.validate.enable": false,
-  "tsserver.log": "verbose" 
+  "coc.preferences.formatOnType": true,
+  "coc.preferences.formatOnSaveFiletypes": [
+    "go",
+    "markdown",
+    "javascript",
+    "typescript",
+    "json",
+    "jsonc"
+  ],
+  "coc.source.file.ignoreHidden": false,
+  "prettier.printWidth": 80,
+  "prettier.singleQuote": true,
+  "prettier.eslintIntegration": true,
+  "codeLens.enable": true,
+  "diagnostic.virtualText": true,
+  "diagnostic.checkCurrentLine": true,
+  "suggest.timeout": 5000,
+  "snippets.extends": {
+    "javascriptreact": ["javascript"],
+    "typescript": ["javascript"]
+  },
+  "list.normalMappings": {
+    "<C-c>": "do:exit"
+  },
+  "list.insertMappings": {
+    "<C-c>": "do:exit"
+  },
+  "eslint.enable": false,
+  "eslint.autoFixOnSave": true,
+  "eslint.filetypes": ["javascript", "typescript", "javascriptreact"],
+  "markdownlint.config": {
+    "default": true,
+    "line-length": false
+  },
+  "diagnostic.maxWindowWidth": 50,
+  "suggest.maxPreviewWidth": 50,
+  "suggest.enablePreview": true,
+  "suggest.floatEnable": true,
+  "suggest.detailMaxLength": 50,
+  "suggest.labelMaxLength": 50,
+  "signature.floatMaxWidth": 50,
+  "diagnostic.maxWindowHeight": 90
 }

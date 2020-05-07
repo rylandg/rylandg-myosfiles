@@ -1,9 +1,13 @@
+# Start configuration added by Zim install {{{
 #
 # User configuration sourced by login shells
 #
+# Initialize Zim
+# source ${ZIM_HOME}/login_init.zsh -q &!
+# }}} End configuration added by Zim install
 
 # Initialize zim
-[[ -s ${ZIM_HOME}/login_init.zsh ]] && source ${ZIM_HOME}/login_init.zsh
+#[[ -s ${ZIM_HOME}/login_init.zsh ]] && source ${ZIM_HOME}/login_init.zsh
 
 if [[ "$SSH_CONNECTION" != "" && "$MY_SSH_CONNECTION" != "yes" ]]; then
     while true; do

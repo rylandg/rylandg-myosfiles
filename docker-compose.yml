@@ -1,23 +1,58 @@
 version: "3.7"
 services:
+  user_datastore:
+    image: postgres:11
+    restart: always
+    ports:
+      - 5431:5432
+    environment:
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?No Postgres password set}
+      POSTGRES_USER: ${POSTGRES_USER:?No Postgres user set}
+      POSTGRES_DB: ${POSTGRES_DB:?No Postgres DB set}
+    volumes:
+      - readthisover_data:/var/lib/postgresql/data
+    networks:
+      backend:
+        aliases:
+          - www.appdata.${APP_NAME:?No app name set}.com
   myos:
-    image: "rylandg/myos:${TAG:-latest}"
+    image: "myos:${TAG:-latest}"
     tty: true
+    privileged: true
+    environment:
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?No Postgres password set}
+      POSTGRES_USER: ${POSTGRES_USER:?No Postgres user set}
+      POSTGRES_DB: ${POSTGRES_DB:?No Postgres DB set}
+      DEV_DATABASE_URL: www.appdata.${APP_NAME:?No app name set}.com
     volumes:
       -  "/var/run/docker.sock:/var/run/docker.sock"
       # Default copy all ssh config at home of local to remote
       -  "~/.myos/authorized_keys/:/home/ubuntu/.ssh/authorized_keys"
       -  "~/.ssh/:/home/ubuntu/.ssh_host/"
       # Default copy all git config at home of local to remote
-      -  "~/.gitconfig/:/home/ubuntu/.gitconfig"
+      -  "/home/dev/.gitconfig:/home/ubuntu/.gitconfig"
+      -  "~/repos/:/home/ubuntu/repos:delegated"
       # Use project-local zsh, tmux and vim settings
       -  "./zsh/.zshenv:/home/ubuntu/.zshenv"
       -  "./zsh:/home/ubuntu/.zsh_config"
+      -  "/dev/null:/home/ubuntu/.zsh_config/.zshenv"
       -  "./tmux/tmux.conf:/home/ubuntu/.tmux.conf"                   
       -  "./tmux/tmux_saves:/home/ubuntu/.tmux_saves"
       -  "./vim:/home/ubuntu/.vim_runtime:delegated"
+      -  "./zsh/.zhistory:/home/ubuntu/.zhistory"
     ports:
       - "22"
+      - "5000:5000"
+      - "3000:3000"
+      - "9009:9009"
+      - "8000:8000"
+      - "8500:8600"
+    networks:
+      backend:
 volumes:
   volume-name:
     driver: local
+volumes:
+  readthisover_data:
+networks:
+  backend: {}

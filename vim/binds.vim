@@ -2,44 +2,49 @@
 nnoremap <leader>u :MundoToggle<cr>
 
 " Allow TAB to autocomplete coc suggestions
-inoremap <silent><expr> <TAB>
-      \ pumvisible() ? "\<C-n>" :
-      \ <SID>check_back_space() ? "\<TAB>" :
-      \ coc#refresh()
-inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
+" inoremap <silent><expr> <TAB>
+"       \ pumvisible() ? "\<C-n>" :
+"       \ <SID>check_back_space() ? "\<TAB>" :
+"       \ coc#refresh()
+" inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
+
 
 let g:coc_snippet_next = '<Tab>'
 let g:coc_snippet_prev = '<S-Tab>'
 
-function! s:check_back_space() abort
-  let col = col('.') - 1
-  return !col || getline('.')[col - 1]  =~# '\s'
-endfunction
-
-inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
-
-" Preview pane should dissapear after successful completion
-autocmd InsertLeave,CompleteDone * if pumvisible() == 0 | pclose | endif
-
-" use ctrl-j, ctrl-k for selecting omni completion entries
-inoremap <expr> <C-j> pumvisible() ? '<C-n>' : ''
-inoremap <expr> <C-k> pumvisible() ? '<C-p>' : ''
 
 " select omni completion entry with enter (always supress newline)
-inoremap <expr> <CR> pumvisible() ? "\<C-Y>" : "\<CR>"
-nmap <silent> xt <Plug>(coc-type-definition)<cr>
-nmap <silent> gd <Plug>(coc-definition)
-nmap <silent> gi <Plug>(coc-implementation)
+" nmap <silent> xt <Plug>(coc-type-definition)<cr>
+" nmap <silent> gd <Plug>(coc-definition)
+" nmap <silent> gi <Plug>(coc-implementation)
 " Use K for show documentation in preview window
-nnoremap <silent> K :call <SID>show_documentation()<CR>
+" nnoremap <silent> K :call <SID>show_documentation()<CR>
+" nnoremap <silent> <space>a  :<C-u>CocList diagnostics<cr>
+" nmap <leader>qf  <Plug>(coc-diagnostic-info)
+
 
 nnoremap gt :bn<cr>
 nnoremap gT :bp<cr>
 
-function! s:show_documentation()
-  if &filetype == 'vim'
-    execute 'h '.expand('<cword>')
-  else
-    call CocAction('doHover')
-  endif
-endfunction
+nnoremap <silent> <leader>tg  :<C-u>CocList diagnostics<cr>
+nnoremap <silent> <space>s  :<C-u>CocList -I symbols<cr>
+
+set statusline^=%{coc#status()}%{get(b:,'coc_current_function','')}
+
+" Remap for do codeAction of current line
+nmap <leader>gv  <Plug>(coc-codeaction)
+
+nnoremap Q :w\|bd<cr>
+
+nm <silent> <F1> :echo "hi<" . synIDattr(synID(line("."),col("."),1),"name")
+    \ . '> trans<' . synIDattr(synID(line("."),col("."),0),"name")
+    \ . "> lo<" . synIDattr(synIDtrans(synID(line("."),col("."),1)),"name")
+    \ . ">"<CR>
+
+nmap <F2> :call <SID>SynStack()<CR>
+function! <SID>SynStack()
+    if !exists("*synstack")
+        return
+    endif
+    echo map(synstack(line('.'), col('.')), 'synIDattr(v:val, "name")')
+endfunc

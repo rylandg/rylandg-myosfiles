@@ -1,7 +1,10 @@
 set nocompatible
 
-runtime plugins.vim
-runtime helpers.vim
+" runtime plugins.vim
+" runtime helpers.vi
+source <sfile>:h/plugins.vim
+source <sfile>:h/helpers.vim
+source <sfile>:h/binds.vim
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Global Vim config
@@ -45,15 +48,13 @@ set incsearch
 " Removes vim specific regex escaping some of the time
 set magic
 
-if has("autocmd")
-
-  " Return to last edit position when opening files
-  autocmd BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
-  
+if has("autocmd")  
   " Auto reload *.vim files if they change
   augroup myvimrc
       au!
       au BufWritePost expand('~/.vim_runtime/*.vim') so $MYVIMRC
+      " Return to last edit position when opening files
+      autocmd BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
   augroup END
 
 endif
@@ -73,16 +74,31 @@ set novisualbell
 set t_vb=
 set tm=500
 
+" Draw 200 lines back to calculate correct syntax highlight
+" set c_minlines=500
+" autocmd BufEnter * :syntax sync fromstart
+" autocmd BufEnter * :syntax sync fromstart
+
 " Avoid redrawing when running macros
 set lazyredraw 
 
 " Faster scrolling
 set ttyfast
 
+" The other regex engine apparently sucks - source me
+" set regexpengine=1
+
 " Allow undo even after buffer/file closed
 try
-    set undodir=/home/ubuntu/.vim_runtime/undo_dir
-    set undofile
+  " Let's save undo info!
+  if !isdirectory($HOME."/.vim_runtime")
+      call mkdir($HOME."/.vim_runtime", "", 0770)
+  endif
+  if !isdirectory($HOME."/.vim_runtime/undo_dir")
+      call mkdir($HOME."/.vim_runtime/undo_dir", "", 0700)
+  endif
+  set undodir=~/.vim_runtime/undo_dir
+  set undofile
 catch
 endtry
 
@@ -91,13 +107,17 @@ endtry
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 " Obviously sets our color scheme
+set t_Co=256
+if (has("termguicolors"))
+  set termguicolors
+endif
 colorscheme gotham
 
 " Enable syntax highlighting for code
 syntax enable
 
 " Re-enable highlighting in terminal
-highlight Visual cterm=reverse ctermbg=NONE
+highlight Visual cterm=reverse ctermbg=Blue
 
 " Shows line numbers
 set number
@@ -113,6 +133,7 @@ set cmdheight=1
 
 " Highlights matching brackets
 set showmatch 
+
 " How many tenths of a second to blink when matching brackets
 set mat=2
 
@@ -163,8 +184,8 @@ set shiftwidth=2
 set tabstop=2
 
 " 100 character linebreaks
-set lbr
-set tw=100
+" set lbr
+" set tw=100
 
 " Auto indents next line based on current line indentation
 set autoindent
@@ -202,9 +223,18 @@ runtime binds.vim
 " Helpers
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 if has("autocmd")
-    autocmd BufWritePre *.txt,*.js,*.py,*.wiki,*.sh,*.coffee,*.ts :call helpers.cleanExtraSpaces()
+    autocmd BufWritePre *.txt,*.js,*.py,*.wiki,*.sh,*.coffee,*.ts,*.tsx,*.jsx :call helpers.cleanExtraSpaces()
     " Somehow typescript can't figure it's shit out
-    autocmd BufNewFile,BufRead *.ts setlocal filetype=typescript
+    " autocmd BufNewFile,BufRead *.ts,*.tsx setlocal filetype=typescript
+    " autocmd BufNewFile,BufRead *.tsx setlocal filetype=typescriptreact
     " Comment support for JSON
     autocmd FileType json syntax match Comment +\/\/.\+$+
 endif
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Commands
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+command! -nargs=0 E     :e
+command! -nargs=0 Q     :q
+command! -nargs=0 Qa    :qa
+command! -nargs=0 T     :tabnew
